@@ -10,7 +10,8 @@
 
 <h1>Maze Generator (v1.0)</h1>
 
-<p>Use the form below to configure your maze, then push the "generate" button to be amazed!</p>
+<p>Use the form below to configure your maze, then push the "generate" button to be amazed!  Note that
+this page doesn't appear to fully work in Firefox, but it does work in Chrome.  I'm still trying to figure that out.</p>
 
 <form action="">
 	<fieldset>
@@ -64,6 +65,12 @@ the root serves as the starting point of the maze, and a leaf serves as the exit
 To draw the maze's solution, we simply begin at the leaf and follow its lineage all the
 way back to the root.  For circular mazes, the goal is to enter on the left, find the center,
 then exit on the right.  So the solution path may retrace itself.
+</p>
+
+<p>
+To me there is some question as to the whether the program is giving equal probability
+of generation to the set of all possible spanning trees.  With some tweaks of the algorithm,
+I could probably make the mazes a bit more interesting.  Most seem to have a fairly easy solution.
 </p>
 
 <p>Copyright (C) 2016, Spencer T. Parkin</p>
