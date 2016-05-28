@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Julia Fractal Demo</title>
+	<script src="JuliaFractalDemo.js"></script>
+</head>
+
+<body>
+
+<h1>Julia Fractal Demo</h1>
+
+<p>
+In this page I'm using AJAX (instead of a form submission or pure JavaScript) to let the user regenerate Julia-set fractals.
+When you push the "Generate!" button, an asynchronous request to generate the fractal image is sent to the server which, in turn,
+responds with image in PNG format.
+</p>
+
+<form action="">
+	<fieldset>
+		<legend>Fractal image parameters</legend>
+		<fieldset>
+			<legend>Image Size</legend>
+			<p>
+				<label>Image Width: </label><input type="text" value="512" id="imageWidth"/>
+			</p>
+			<p>
+				<label>Image Height: </label><input type="text" value="512" id="imageHeight"/>
+			</p>
+		</fieldset>
+		<fieldset>
+			<legend>Window into the complex plane</legend>
+			<p>
+				<label>X-min: </label><input type="text" value="-2.0" id="xMin"/>
+				<label>X-max: </label><input type="text" value="2.0" id="xMax"/>
+			</p>
+			<p>
+				<label>Y-min: </label><input type="text" value="-2.0" id="yMin"/>
+				<label>Y-max: </label><input type="text" value="2.0" id="yMax"/>
+			</p>
+		</fieldset>
+		<fieldset>
+			<legend>Fractal parameters</legend>
+			<p>
+				<label>Max-Iters: </label><input type="text" value="200" id="maxIters"/>
+			</p>
+			<p>
+				<label>C-real: </label><input type="text" value="-0.4" id="cReal"/>
+				<label>C-imag: </label><input type="text" value="0.6" id="cImag"/>
+			</p>
+		</fieldset>
+		<p>
+			<input type="button" value="Generate!" onclick="GenerateJuliaFractal()" id="genButton"/>
+			<label id="genStatus">Click the button!</label>
+		</p>
+	</fieldset>
+</form>
+
+<p>
+	<canvas id="canvas" width="512" height="512" style="border:1px solid #000000;"></canvas>
+</p>
+
+<p>
+Copyright (C) 2016, Spencer T. Parkin
+</p>
+
+</body>
+
+</html>
