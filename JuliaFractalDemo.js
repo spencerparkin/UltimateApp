@@ -21,27 +21,21 @@ function FractalRequestResponder()
 	}
 	
 	//
-	// Grab out canvas rendering context.
+	// After failing over and over to generate a data-URI, I ran into the
+	// following method on stack-overflow.  I'm not yet sure exactly how or why it works.
 	//
 	
-	var canvas = document.getElementById( "canvas" );
-	var context = canvas.getContext( '2d' );
+	var rawImageData = fractalRequest.response;
+	var byteArray = new Uint8Array( rawImageData );
+	var blob = new Blob( [ byteArray ], { 'type' : 'image/png' } );
 	
-	//
-	// Make an image and setup to render into the canvas on image load.
-	//
-	
-	var image = new Image();
-	image.onload = function()
+	fractalImage.onerror = function()
 	{
-		context.drawImage( image, 0, 0 );
+		alert( 'Failed to load image from data-URI.' );
 	}
 	
-	//
-	// Extract the PNG data and set to load it as the image source.
-	//
-	
-	image.src = "data:image/png;" + fractalRequest.response;
+	var url = URL.createObjectURL( blob );	
+	fractalImage.src = url;
 
 	//
 	// Tell the user we're done and update the status indicator.
@@ -62,7 +56,7 @@ function FractalRequestResponder()
 
 // Note that a better way to do this is probably not to make an AJAX call at all, but to
 // have JavaScript just alter the HTML somewhere to be <img src="JuliaFractal.php?..."/>.
-// The problem with that, however, is that the page would be inresponsive until the browser
+// The problem with that, however, is that the page would be unresponsive until the browser
 // finished the request.  Because we're doing the request, the user can continue to use the
 // page while the server generates the image.
 function GenerateJuliaFractal()
@@ -126,7 +120,7 @@ function GenerateJuliaFractal()
 	
 	fractalRequest.open( "GET", url, true );
 	fractalRequest.onreadystatechange = FractalRequestResponder;
-	//fractalRequest.responseType = 'blob';
+	fractalRequest.responseType = "arraybuffer";	// It may have also been useful to use "blob" here.
 	fractalRequest.send( null );
 	
 	//

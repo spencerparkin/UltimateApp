@@ -38,18 +38,18 @@
 	// Generate our color look-up table.
 	//
 	
-	$colorTableSize = 512;
+	$colorTableSize = 128;
 	$colorTable = array();
 	
 	$colorPoints =
 	[
-		0 => array( 0xFF, 0x00, 0x00 ),		// Red.
-		1 => array( 0xFF, 0xA5, 0x00 ),		// Orange.
-		2 => array( 0xFF, 0xFF, 0x00 ),		// Yellow.
-		3 => array( 0x00, 0xFF, 0x00 ),		// Green.
-		4 => array( 0x00, 0x00, 0xFF ),		// Blue.
-		5 => array( 0x4B, 0x00, 0x82 ),		// Indigo.
-		6 => array( 0x8A, 0x2B, 0xE2 ),		// Violet.
+		0 => array( 0x00, 0x00, 0xFF ),		// Blue.
+		1 => array( 0x4B, 0x00, 0x82 ),		// Indigo.
+		2 => array( 0x8A, 0x2B, 0xE2 ),		// Violet.
+		3 => array( 0xFF, 0x00, 0x00 ),		// Red.
+		4 => array( 0xFF, 0xA5, 0x00 ),		// Orange.
+		5 => array( 0xFF, 0xFF, 0x00 ),		// Yellow.
+		6 => array( 0x00, 0xFF, 0x00 ),		// Green.
 	];
 	
 	$numColorPoints = count( $colorPoints );

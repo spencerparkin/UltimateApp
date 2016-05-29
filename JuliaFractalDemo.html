@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Julia Fractal Demo</title>
+	<title>Julia Fractal Demo (v1.0)</title>
 	<script src="JuliaFractalDemo.js"></script>
 </head>
 
@@ -14,7 +14,7 @@
 <p>
 In this page I'm using AJAX (instead of a form submission or pure JavaScript) to let the user regenerate Julia-set fractals.
 When you push the "Generate!" button, an asynchronous request to generate the fractal image is sent to the server which, in turn,
-responds with image in PNG format.
+responds with an image in PNG format.
 </p>
 
 <form action="">
@@ -58,7 +58,20 @@ responds with image in PNG format.
 </form>
 
 <p>
-	<canvas id="canvas" width="512" height="512" style="border:1px solid #000000;"></canvas>
+	<!-- When the image is clicked, do we get a location in the click-event?  If so, we could perform zooming this way. -->
+	<img src="" id="fractalImage">
+</p>
+
+<h2>Discussion</h2>
+
+<p>
+Unlike the Mandelbrot set, there are many different kinds of Julia sets.  For every complex number C in
+the complex plane, there is a corresponding Julia set.  The most interesting such sets are found when C
+is chosen near the borders of the Mandelbrot set.  Anyhow, a Julia set is found as the set of all complex
+numbers Z that cannot escape an infinite number of orbits through the recursive equation Z -> Z<sup>2</sup> + C.
+Such a Z is said to never escape if its magnitude has an upper bound over all recursive iterations.
+It can be shown that if |Z| ever becomes greater than a certain size, then it will escape.
+More information can be found <a href="https://en.wikipedia.org/wiki/Julia_set" target="_blank">here</a>.
 </p>
 
 <p>
