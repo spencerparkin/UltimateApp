@@ -14,7 +14,7 @@
 <p>
 In this page I'm using AJAX (instead of a form submission or pure JavaScript) to let the user regenerate Julia-set fractals.
 When you push the "Generate!" button, an asynchronous request to generate the fractal image is sent to the server which, in turn,
-responds with an image in PNG format.
+responds with an image in PNG format.  Once an image appears, try clicking on it to zoom in to the location under the cursor.
 </p>
 
 <form action="">
@@ -53,12 +53,13 @@ responds with an image in PNG format.
 		<p>
 			<input type="button" value="Generate!" onclick="GenerateJuliaFractal()" id="genButton"/>
 			<label id="genStatus">Click the button!</label>
+			<img src="16_cycle_one_24.gif" id="loadingIcon" hidden>
 		</p>
 	</fieldset>
 </form>
 
 <p>
-	<img src="" id="fractalImage" onclick="OnImageClicked( event )">
+	<img src="" id="fractalImage" onclick="OnFractalImageClicked( event )">
 </p>
 
 <h2>Discussion</h2>

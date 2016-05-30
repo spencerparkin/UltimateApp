@@ -26,7 +26,7 @@
 	$parameters->yMax = filter_input( INPUT_GET, "yMax" ) or die( "No yMax given." );
 	$parameters->cReal = filter_input( INPUT_GET, "cReal" ) or die( "No cReal given." );
 	$parameters->cImag = filter_input( INPUT_GET, "cImag" ) or die( "No cImag given." );
-	$parameters->maxIters = 200;
+	$parameters->maxIters = filter_input( INPUT_GET, "maxIters" ) or die( "No maxIters given." );
 	
 	//
 	// Create our image in the desired dimensions.
