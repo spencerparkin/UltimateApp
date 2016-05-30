@@ -18,19 +18,15 @@
 	};
 	
 	$parameters = new Parameters();
-	$parameters->imageWidth = filter_input( INPUT_GET, "imageWidth" ) or die( "No imageWidth given." );
-	$parameters->imageHeight = filter_input( INPUT_GET, "imageHeight" ) or die( "No imageHeight given." );
-	$parameters->xMin = filter_input( INPUT_GET, "xMin" ) or die( "No xMin given." );
-	$parameters->xMax = filter_input( INPUT_GET, "xMax" ) or die( "No xMax given." );
-	$parameters->yMin = filter_input( INPUT_GET, "yMin" ) or die( "No yMin give." );
-	$parameters->yMax = filter_input( INPUT_GET, "yMax" ) or die( "No yMax given." );
-	$parameters->cReal = filter_input( INPUT_GET, "cReal" ) or die( "No cReal given." );
-	$parameters->cImag = filter_input( INPUT_GET, "cImag" ) or die( "No cImag given." );
-	$parameters->maxIters = filter_input( INPUT_GET, "maxIters" ) or die( "No maxIters given." );
-	
-	// I have a bug.  Whenever real or imaginary part of C is zero, image fails to render.  Why?
-	//$parameters->cReal = floatval( $parameters->cReal );
-	//$parameters->cImag = floatval( $parameters->cImag );
+	$parameters->imageWidth = filter_input( INPUT_GET, "imageWidth" );
+	$parameters->imageHeight = filter_input( INPUT_GET, "imageHeight" );
+	$parameters->xMin = filter_input( INPUT_GET, "xMin" );
+	$parameters->xMax = filter_input( INPUT_GET, "xMax" );
+	$parameters->yMin = filter_input( INPUT_GET, "yMin" );
+	$parameters->yMax = filter_input( INPUT_GET, "yMax" );
+	$parameters->cReal = filter_input( INPUT_GET, "cReal" );
+	$parameters->cImag = filter_input( INPUT_GET, "cImag" );
+	$parameters->maxIters = filter_input( INPUT_GET, "maxIters" );
 	
 	//
 	// Create our image in the desired dimensions.
