@@ -52,14 +52,13 @@ responds with an image in PNG format.
 		</fieldset>
 		<p>
 			<input type="button" value="Generate!" onclick="GenerateJuliaFractal()" id="genButton"/>
-			<label id="genStatus">Click the button!  (Note: Internal server error occurs until I figure out what's going wrong.)</label>
+			<label id="genStatus">Click the button!</label>
 		</p>
 	</fieldset>
 </form>
 
 <p>
-	<!-- When the image is clicked, do we get a location in the click-event?  If so, we could perform zooming this way. -->
-	<img src="" id="fractalImage">
+	<img src="" id="fractalImage" onclick="OnImageClicked( event )">
 </p>
 
 <h2>Discussion</h2>
