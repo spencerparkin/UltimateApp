@@ -28,6 +28,10 @@
 	$parameters->cImag = filter_input( INPUT_GET, "cImag" ) or die( "No cImag given." );
 	$parameters->maxIters = filter_input( INPUT_GET, "maxIters" ) or die( "No maxIters given." );
 	
+	// I have a bug.  Whenever real or imaginary part of C is zero, image fails to render.  Why?
+	//$parameters->cReal = floatval( $parameters->cReal );
+	//$parameters->cImag = floatval( $parameters->cImag );
+	
 	//
 	// Create our image in the desired dimensions.
 	//
@@ -38,7 +42,7 @@
 	// Generate our color look-up table.
 	//
 	
-	$colorTableSize = 128;
+	$colorTableSize = 128;		// Should expose this in interface too.
 	$colorTable = array();
 	
 	$colorPoints =

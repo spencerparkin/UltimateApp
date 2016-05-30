@@ -3,18 +3,19 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Julia Fractal Demo (v1.0)</title>
+	<title>Julia Fractal Demo</title>
 	<script src="JuliaFractalDemo.js"></script>
 </head>
 
 <body>
 
-<h1>Julia Fractal Demo</h1>
+<h1>Julia Fractal Demo (v1.0)</h1>
 
 <p>
 In this page I'm using AJAX (instead of a form submission or pure JavaScript) to let the user regenerate Julia-set fractals.
 When you push the "Generate!" button, an asynchronous request to generate the fractal image is sent to the server which, in turn,
 responds with an image in PNG format.  Once an image appears, try clicking on it to zoom in to the location under the cursor.
+(Note that I have a bug where the image fails to render if the real or imaginary part of C is zero.  I'm still trying to figure this out.)
 </p>
 
 <form action="">
@@ -39,6 +40,9 @@ responds with an image in PNG format.  Once an image appears, try clicking on it
 				<label>Y-min: </label><input type="text" value="-2.0" id="yMin"/>
 				<label>Y-max: </label><input type="text" value="2.0" id="yMax"/>
 			</p>
+			<p>
+				<input type="button" value="Reset" onclick="OnResetButtonClicked()"/>
+			</p>
 		</fieldset>
 		<fieldset>
 			<legend>Fractal parameters</legend>
@@ -48,6 +52,20 @@ responds with an image in PNG format.  Once an image appears, try clicking on it
 			<p>
 				<label>C-real: </label><input type="text" value="-0.4" id="cReal"/>
 				<label>C-imag: </label><input type="text" value="0.6" id="cImag"/>
+			</p>
+			<p>
+				<label>Pre-programmed Julia set: </label>
+				<select id="juliaDropdown" onchange="OnJuliaDropdownChanged( event )">
+					<option value="1">Julia 1</option>
+					<option value="2">Julia 2</option>
+					<option value="3">Julia 3</option>
+					<option value="4">Julia 4</option>
+					<option value="5">Julia 5</option>
+					<option value="6">Julia 6</option>
+					<option value="7">Julia 7</option>
+					<option value="8">Julia 8</option>
+					<option value="9">Julia 9</option>
+				</select>
 			</p>
 		</fieldset>
 		<p>

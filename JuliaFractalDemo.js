@@ -32,7 +32,7 @@ function FractalRequestResponder()
 	var fractalImage = document.getElementById( "fractalImage" );
 	fractalImage.onerror = function()
 	{
-		alert( 'Failed to load image from data-URI.' );
+		alert( 'Failed to load image.' );
 	}
 	
 	var url = URL.createObjectURL( blob );	
@@ -182,6 +182,96 @@ function OnFractalImageClicked( event )
 	yMaxEle.value = yMax.toString();
 	
 	GenerateJuliaFractal();
+}
+
+function OnJuliaDropdownChanged( event )
+{
+	var juliaDropdown = document.getElementById( "juliaDropdown" );
+	var juliaType = parseInt( juliaDropdown.value );
+	
+	var cReal = 0.0;
+	var cImag = 0.0;
+	
+	switch( juliaType )
+	{
+		case 1:
+		{
+			cReal = -0.4;
+			cImag = 0.6;
+			break;
+		}
+		case 2:
+		{
+			cReal = 0.285;
+			cImag = 0.0;
+			break;
+		}
+		case 3:
+		{
+			cReal = 0.285;
+			cImag = 0.01;
+			break;
+		}
+		case 4:
+		{
+			cReal = 0.45;
+			cImag = 0.1428;
+			break;
+		}
+		case 5:
+		{
+			cReal = -0.70176;
+			cImag = -0.3842;
+			break;
+		}
+		case 6:
+		{
+			cReal = -0.835;
+			cImag = -0.2321;
+			break;
+		}
+		case 7:
+		{
+			cReal = -0.8;
+			cImag = 0.156;
+			break;
+		}
+		case 8:
+		{
+			cReal = -0.7269;
+			cImag = 0.1889;
+			break;
+		}
+		case 9:
+		{
+			cReal = 0.0;
+			cImag = 0.8;
+			break;
+		}
+	}
+	
+	document.getElementById( "cReal" ).value = cReal.toString();
+	document.getElementById( "cImag" ).value = cImag.toString();
+	
+	ResetDomainAndRange();
+}
+
+function ResetDomainAndRange()
+{
+	var xMinEle = document.getElementById( "xMin" );
+	var xMaxEle = document.getElementById( "xMax" );
+	var yMinEle = document.getElementById( "yMin" );
+	var yMaxEle = document.getElementById( "yMax" );
+	
+	xMinEle.value = "-2.0";
+	xMaxEle.value = "2.0";
+	yMinEle.value = "-2.0";
+	yMaxEle.value = "2.0";
+}
+
+function OnResetButtonClicked()
+{
+	ResetDomainAndRange();
 }
 
 // JuliaFractalDemo.js
