@@ -10,6 +10,9 @@
 A few years ago I hiked Lone Peak in Draper Utah.  This is an outstanding
 hike with incredible scenery the entire way.  While this page
 shows the pictures I took on that hike, it also demonstrates a basic knowledge of PHP.
+(In hindsight, I would implement this page using JavaScript instead of PHP so that we don't
+fill up the browser history as we flip through the pictures.  Nevertheless, I feel this page was
+a good way to get a feel for PHP; so I'm leaving it as is.)
 </p>
 <p>
 	<?php
