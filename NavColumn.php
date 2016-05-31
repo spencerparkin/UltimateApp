@@ -42,6 +42,12 @@
 		$page->description = "Flip through hike pictures with PHP.";
 		array_push( $pageArray, $page );
 		
+		$page = new Page;
+		$page->url = "SundialClimb.php";
+		$page->label = "Sundial Climb";
+		$page->description = "Flip through climbing pictures with JavaScript.";
+		array_push( $pageArray, $page );
+		
 		print "<ul>\n";
 		
 		foreach( $pageArray as $page )
