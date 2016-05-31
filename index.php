@@ -30,9 +30,9 @@
 	I keep an up-to-date copy of my resume <a href="https://sites.google.com/site/spencertparkinresume/">here</a>.
 	</p>
 	<p>
-	And what else should adorn the home page of my site but a picture of me and my better half?
+	The ugly guy in the photo below is me.
 	</p>
-	<img src="MelindaAndMe.jpg">
+	<img src="MeAndBop.jpg">
 </div>
 
 <div id="footer">
