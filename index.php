@@ -30,7 +30,7 @@
 	I keep an up-to-date copy of my resume <a href="https://sites.google.com/site/spencertparkinresume/">here</a>.
 	</p>
 	<p>
-	The ugly guy in the photo below is me.
+	The ugly guy in the photo below is me.  The little guy up top is my son.
 	</p>
 	<img src="MeAndBop.jpg">
 </div>
