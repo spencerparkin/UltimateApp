@@ -29,6 +29,10 @@
 	<p>
 	I keep an up-to-date copy of my resume <a href="https://sites.google.com/site/spencertparkinresume/">here</a>.
 	</p>
+	<p>
+	And what else should adorn the home page of my site but a picture of my and my better half?
+	</p>
+	<img src="MelindaAndMe.jpg">
 </div>
 
 <div id="footer">
