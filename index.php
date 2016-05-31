@@ -26,6 +26,9 @@
 	various web-development technologies including HTML/CSS, JavaScript, AJAX, PHP and MySQL.
 	These initial examples are simple, but I hope to add more and more sophisticated pages as time goes by.
 	</p>
+	<p>
+	I keep an up-to-date copy of my resume <a href="https://sites.google.com/site/spencertparkinresume/">here</a>.
+	</p>
 </div>
 
 <div id="footer">
