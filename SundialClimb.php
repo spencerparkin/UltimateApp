@@ -33,7 +33,7 @@
 			{
 				case 0:
 				{
-					description = "This is on the approach.  Mike's backpack can be seen lower-left.";
+					description = "This is on the approach.  Mike's backpack can be seen lower-left.  The Sundial can be seen on the horizon!";
 					break;
 				}
 				case 1:
