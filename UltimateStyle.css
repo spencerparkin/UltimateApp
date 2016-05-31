@@ -1,0 +1,28 @@
+
+#header
+{
+	background-color: lightblue;
+	text-align: center;
+}
+
+#navColumn
+{
+	background-color: lightgrey;
+	float: left;
+	width: 20%;
+	min-height: 30em;
+}
+
+#content
+{
+	background-color: white;
+	float: left;
+	width: 75%;
+	border-left: 10px double white;
+}
+
+#footer
+{
+	background-color: lightblue;
+	clear: both;
+}
