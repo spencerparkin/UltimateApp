@@ -22,7 +22,7 @@
 <div id="content">
 	<h2>Welcome!</h2>
 	<p>
-	The purpose of this site is to demonstrate to prospective employers a basic knowledge of
+	The purpose of this site is mainly to serve as a sandbox where I can expirament with and learn
 	various web-development technologies including HTML/CSS, JavaScript, AJAX, PHP and MySQL.
 	These initial examples are simple, but I hope to add more and more sophisticated pages as time goes by.
 	</p>
