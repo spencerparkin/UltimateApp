@@ -107,7 +107,7 @@ function GenerateJuliaFractal()
 	// Formulate our URL with the fractal parameters.
 	//
 	
-	var url = "JuliaFractal.php"
+	var url = "JuliaFractal.php";
 	url += "?imageWidth=" + imageWidth;
 	url += "&imageHeight=" + imageHeight;
 	url += "&maxIters=" + maxIters;

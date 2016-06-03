@@ -110,7 +110,9 @@
 			die( "Failed to insert new row ($db->error)" );
 		
 		$db->Disconnect();
-		return true;
+		
+		print "Guestbook signed!";
+		exit;
 	}
 	
 	function ViewGuestbookEntries( $minDate, $maxDate )

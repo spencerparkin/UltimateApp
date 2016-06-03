@@ -1,4 +1,9 @@
 
+.hidden-captcha
+{
+	display: none;
+}
+
 #header
 {
 	background-color: lightblue;
