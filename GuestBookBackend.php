@@ -86,11 +86,27 @@
 			catch( PDOExceptoin $exception )
 			{
 				$this->error = $exception->getMessage();
-				$this->pdoObject = null;
 				return false;
 			}
 			
 			return true;
+		}
+		
+		function Query( $sqlStatement )
+		{
+			$result = null;
+			
+			try
+			{
+				$result = $this->pdoObject->query( $sqlStatement );
+			}
+			catch( PDOEXCEPTION $exceptoin )
+			{
+				$this->error = $exceptoin->getMessage();
+				return null;
+			}
+			
+			return $result;
 		}
 	}
 
@@ -115,9 +131,35 @@
 		exit;
 	}
 	
-	function ViewGuestbookEntries( $minDate, $maxDate )
+	function ViewGuestbookEntries()
 	{
-		// TODO: Write this.
+		$db = new Database();
+		if( !$db->Connect() )
+			die( "Failed to connect to the database ($db->error)" );
+		
+		global $inputMethod;
+		
+		$minDate = filter_input( $inputMethod, "minDate", FILTER_SANITIZE_STRING );
+		$maxDate = filter_input( $inputMethod, "maxDate", FILTER_SANITIZE_STRING );
+		
+		$sqlStatement = "select * from entries where sign_date between '$minDate' and '$maxDate';";
+		$result = $db->Query( $sqlStatement );
+		if( $result == null )
+			die( "Failed to perform SQL query." );
+		
+		$db->Disconnect();
+		
+		foreach( $result as $row )
+		{
+			$name = $row[ 'name' ];
+			$message = $row[ 'message' ];
+			$date = $row[ 'sign_date' ];
+			$time = $row[ 'sign_time' ];
+			
+			print "<p>On $date at $time, <strong>$name</strong> said, \"$message\"<p>";
+		}
+		
+		exit;
 	}
 	
 	//

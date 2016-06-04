@@ -6,7 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="UltimateStyle.css">
 	<script src="GuestBook.js" type="text/javascript"></script>
 </head>
-<body onload="document.getElementById( 'criticalInfo' ).style.display = 'none'">
+<body onload="OnLoad()">
 
 <div id="header">
 	<h1>The Guest Book</h1>
@@ -50,6 +50,7 @@
 	<p><form>
 		<fieldset>
 			<legend>View Guest Book</legend>
+			<p>Unless you're using Chrome, enter dates in yyyy-mm-dd format.</p>
 			<label>Min-Date: </label><input type="date" id="minDate"/>
 			<label>Max-Date: </label><input type="date" id="maxDate"/>
 			<p><input type="button" value="View Entries!" onclick="ViewEntries()"/></p>
