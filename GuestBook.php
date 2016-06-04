@@ -26,6 +26,14 @@
 		Would you use mouse pooh, cow pooh, or dinosaur pooh to describe its quality?  Or is it altogether
 		so loathsome and so horrible that no amount pooh from any animal would suffice?
 	</p>
+	<p>
+		Note that some effort was put into detering spam bots, but I have yet to add some sort of
+		captcha to this page.  Google provides a good solution, but I'm still trying to figure out how to use it.
+		In the mean time, if you find any security holes in this page, please let me know about it so that I
+		can try to fill them.  Of course, there's nothing important about this page; it's a learning experience
+		for me.  And, of course, don't input any sensative information into this page.  I'm not yet using SSL,
+		and everyone can view anyone else's posts.
+	</p>
 	<!-- TODO: Put here a count of how many people to-date have signed the guestbook. -->
 	<p><form action="" id="guestSignForm">
 		<fieldset>
@@ -41,7 +49,8 @@
 				If the bot does fill-out the field, we know that the submission is automated.
 			-->
 			<input class="hidden-captcha" type="text" id="criticalInfo" value=""/>
-			<input type="button" value="Add Entry!" onclick="AddEntry()"/>
+			<input type="button" value="Add Entry!" onclick="AddEntry()" id="addEntryButton"/>
+			<img src="16_cycle_one_24.gif" id="addLoadingIcon" hidden>
 			<div id="signResponse">
 			</div>
 		</fieldset>
@@ -53,7 +62,7 @@
 			<p>Unless you're using Chrome, enter dates in yyyy-mm-dd format.</p>
 			<label>Min-Date: </label><input type="date" id="minDate"/>
 			<label>Max-Date: </label><input type="date" id="maxDate"/>
-			<p><input type="button" value="View Entries!" onclick="ViewEntries()"/></p>
+			<p><input type="button" value="View Entries!" onclick="ViewEntries()" id="viewEntriesButton"/><img src="16_cycle_one_24.gif" id="viewLoadingIcon" hidden></p>
 		</fieldset>
 	</form></p>
 	

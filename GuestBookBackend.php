@@ -144,14 +144,32 @@
 		
 		$db->Disconnect();
 		
-		foreach( $result as $row )
+		$count = count( $result );
+		
+		if( $count == 0 )
+			print "<p>No results found!</p>";
+		else
 		{
-			$name = $row[ 'name' ];
-			$message = $row[ 'message' ];
-			$date = $row[ 'sign_date' ];
-			$time = $row[ 'sign_time' ];
+			$count = 0;
 			
-			print "<p>On $date at $time, <strong>$name</strong> said, \"$message\"<p>";
+			foreach( $result as $row )
+			{
+				$name = $row[ 'name' ];
+				$message = $row[ 'message' ];
+				$date = $row[ 'sign_date' ];
+				$time = $row[ 'sign_time' ];
+				
+				print "<p>On $date at $time, <strong>$name</strong> said, \"$message\"<p>";
+				
+				$count++;
+			}
+			
+			if( $count == 0 )
+				print "<p>No results found!</p>";
+			else if( $count == 1 )
+				print "<p>$count entry found.</p>";
+			else
+				print "<p>$count entries found.</p>";
 		}
 		
 		exit;

@@ -55,6 +55,9 @@ function AddEntry()
 			guestName.value = "";
 			guestMessage.value = "";
 		}
+		
+		document.getElementById( "addLoadingIcon" ).hidden = true;
+		document.getElementById( "addEntryButton" ).disabled = false;
 	}
 	
 	var formData = "action=AddGuestbookEntry";
@@ -62,6 +65,9 @@ function AddEntry()
 	formData += "&message=" + encodeURIComponent( guestMessage.value );
 	request.setRequestHeader( "Content-type", "application/x-www-form-urlencoded" );
 	request.send( formData );
+	
+	document.getElementById( "addLoadingIcon" ).hidden = false;
+	document.getElementById( "addEntryButton" ).disabled = true;
 }
 
 function ViewEntries()
@@ -122,6 +128,8 @@ function ViewEntries()
 		var response = this.responseText;
 		var signResponse = document.getElementById( "viewQueryResults" );
 		signResponse.innerHTML = response;
+		document.getElementById( "viewLoadingIcon" ).hidden = true;
+		document.getElementById( "viewEntriesButton" ).disabled = false;
 	}
 	
 	var formData = "action=ViewGuestbookEntries";
@@ -129,6 +137,9 @@ function ViewEntries()
 	formData += "&maxDate=" + maxDateStr;
 	request.setRequestHeader( "Content-type", "application/x-www-form-urlencoded" );	// I should figure out how to send JSON.
 	request.send( formData );
+	
+	document.getElementById( "viewLoadingIcon" ).hidden = false;
+	document.getElementById( "viewEntriesButton" ).disabled = true;
 }
 
 // GuestBook.js
