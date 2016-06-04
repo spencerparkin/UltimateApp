@@ -35,6 +35,10 @@
 		And, of course, don't input any sensative information into this page.  I'm not yet using SSL,
 		and everyone can view anyone else's posts anyway.
 	</p>
+	<p>
+		Lastly, note that there is a 255 character max.  It would be nice if I could show the number
+		of characters used as you type.  I'll add that when I get the chance.
+	</p>
 	<!-- TODO: Put here a count of how many people to-date have signed the guestbook. -->
 	<p><form action="" id="guestSignForm">
 		<fieldset>
