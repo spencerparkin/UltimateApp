@@ -8,8 +8,6 @@
 			message char(255) not null,
 			primary key (id) ) engine=InnoDB;
 	*/
-
-	define( 'deployed', true );
 	
 	class Database
 	{
@@ -30,27 +28,15 @@
 			// Determine the database connection parameters.
 			//
 			
-			$hostname = null;
-			$username = null;
-			$password = null;
-			$dbname = null;
+			$hostname = "us-cdbr-iron-east-04.cleardb.net";
+			$username = "b724b0bdcfed8d";
+			$password = "06378b62";
+			$dbname = "heroku_5f992fd1e502032";
 			
-			if( $deployed )
-			{
-				$url = parse_url( getenv( "DATABASE_URL" ) );
-		
-				$hostname = $url[ "host" ];
-				$username = $url[ "user" ];
-				$password = $url[ "pass" ];
-				$dbname = substr( $url[ "path" ], 1 );
-			}
-			else
-			{
-				$hostname = "localhost";
-				$username = "root";
-				$password = "BarfAlot";
-				$dbname = "guestbook";
-			}
+			//$hostname = "localhost";
+			//$username = "root";
+			//$password = "BarfAlot";
+			//dbname = "guestbook";
 			
 			//
 			// Try to connect to the database.
