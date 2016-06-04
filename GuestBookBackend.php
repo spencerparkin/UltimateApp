@@ -1,6 +1,15 @@
 <?php
 
-	define( 'deployed', false );
+	/*
+	create table entries ( id int not null auto_increment,
+			name char(50) not null,
+			sign_date date not null,
+			sign_time time not null,
+			message char(255) not null,
+			primary key (id) ) engine=InnoDB;
+	*/
+
+	define( 'deployed', true );
 	
 	class Database
 	{
