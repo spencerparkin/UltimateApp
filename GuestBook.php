@@ -30,9 +30,10 @@
 		Note that some effort was put into detering spam bots, but I have yet to add some sort of
 		captcha to this page.  Google provides a good solution, but I'm still trying to figure out how to use it.
 		In the mean time, if you find any security holes in this page, please let me know about it so that I
-		can try to fill them.  Of course, there's nothing important about this page; it's a learning experience
-		for me.  And, of course, don't input any sensative information into this page.  I'm not yet using SSL,
-		and everyone can view anyone else's posts.
+		can try to fill them.  Of course, there's nothing important about this page; it's sole purpose is to
+		give me some experience with a page having a MySQL/PDO backend.
+		And, of course, don't input any sensative information into this page.  I'm not yet using SSL,
+		and everyone can view anyone else's posts anyway.
 	</p>
 	<!-- TODO: Put here a count of how many people to-date have signed the guestbook. -->
 	<p><form action="" id="guestSignForm">
