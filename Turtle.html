@@ -1,0 +1,246 @@
+<html>
+	<head>
+		<title>Turtle Graphics Demo</title>
+		<meta charset="UTF-8">
+		<script src="https://code.jquery.com/jquery.js"></script>
+		<script type="text/javascript">
+			var AddRule = function( rule_text )
+			{
+				id = 0;
+				while( true )
+				{
+					rule_span = document.getElementById( 'rule_' + id );
+					if( !rule_span )
+						break;
+					id++;
+				}
+				
+				rule_div = document.getElementById( 'rule_div' );
+				$( '#rule_div' ).append( '<span class="rule" id="rule_' + id + '">Rule ' + id + ': <input id="rule_' + id + '_input" type="text" value="' + rule_text + '"><input type="button" value="Delete" onclick="OnDeleteRuleButtonClicked( event, ' + id + ' )"><br></span>' );
+				$( '#rule_' + id ).hide().fadeIn( 500 );
+			}
+			
+			var DeleteAllRules = function()
+			{
+				rule_div = document.getElementById( 'rule_div' );
+				rule_div.innerHTML = '';
+			}
+		
+			var OnAddRuleButtonClicked = function( event )
+			{
+				AddRule( '' );
+			}
+			
+			var OnDeleteRuleButtonClicked = function( event, id )
+			{
+				$( '#rule_' + id ).fadeOut( 500, function() { $( '#rule_' + id ).remove(); } );
+			}
+			
+			function Turtle()
+			{
+				state = {}
+				state.color = 'black';
+				state.location = { 'x' : 0, 'y' : 0 };
+				state.orientation = 0;
+				state.width = 1;
+				state.drawing = true;
+				
+				this.state_stack = []
+				this.PushState( state );
+			}
+			
+			Turtle.prototype.angle_delta = 45;
+			
+			Turtle.prototype.PushState = function( state )
+			{
+				this.state_stack.push( state );
+			}
+			
+			Turtle.prototype.PopState = function()
+			{
+				this.state_stack.pop();
+			}
+			
+			Turtle.prototype.SetState = function( state )
+			{
+				this.state_stack[ this.state_stack.length - 1 ] = state;
+			}
+			
+			Turtle.prototype.GetState = function( return_copy = false )
+			{
+				var state = this.state_stack[ this.state_stack.length - 1 ];
+				if( return_copy )
+					state = JSON.parse( JSON.stringify( state ) )
+				return state;
+			}
+			
+			Turtle.prototype.Move = function( radius )
+			{
+				var state = this.GetState();
+				var angle = state.orientation * ( Math.PI / 180.0 );
+				var dx = radius * Math.cos( angle );
+				var dy = radius * Math.sin( angle );
+				state.location.x += dx;
+				state.location.y += dy;
+				this.SetState( state );
+			}
+			
+			function ExecutePattern( pattern )
+			{
+				var turtle = new Turtle();
+				var state_array = [];
+				var path = '';
+				
+				state_array.push( turtle.GetState( true ) );
+				
+				for( var i = 0; i < pattern.length; i++ )
+				{
+					var symbol = pattern[i];
+					
+					if( symbol === '[' )
+						turtle.PushState( turtle.GetState() );
+					else if( symbol === ']' )
+						turtle.PopState();
+					else if( symbol.match( /[A-Z]{1}/ ) )
+					{
+						// TODO: Need way to configure variables to be 'move forward with draw', 'move forward with no draw', or 'do nothing', etc.
+						turtle.Move(1);
+					}
+					else if( symbol === '+' )
+						turtle.GetState().orientation += Turtle.prototype.angle_delta;
+					else if( symbol === '-' )
+						turtle.GetState().orientation -= Turtle.prototype.angle_delta;
+					else if( symbol === '^' )
+						turtle.GetState().drawing = true;
+					else if( symbol === '!' )
+						turtle.GetSTate().drawing = false;
+						
+					state_array.push( turtle.GetState( true ) );
+				}
+				
+				//...calculate a bounding rectangle...
+				//...move all turtle locations to fit into the SVG drawing area...
+				
+				return path;
+			}
+			
+			function GeneratePattern( pattern, substitution_depth, rule_array )
+			{
+				for( var i = 0; i < substitution_depth; i++ )
+				{
+					new_pattern = '';
+					
+					for( var j = 0; j < pattern.length; j++ )
+					{
+						for( var k = 0; k < rule_array.length; k++ )
+						{
+							var replacement = rule_array[k]( pattern[j] );
+							if( replacement )
+							{
+								new_pattern = new_pattern + replacement;
+								break;
+							}
+						}
+					}
+					
+					pattern = new_pattern;
+				}
+				
+				return pattern;
+			}
+			
+			function GenerateRuleFunction( rule_text )
+			{
+				var array = rule_text.match( /(.+)->(.+)/ );
+				var rule_func = function( symbol )
+				{
+					if( symbol !== array[1] )
+						return false;
+					return array[2];
+				}
+				return rule_func;
+			}
+			
+			function GenerateTurtleGraphics()
+			{
+				rule_array = [];
+			
+				rule_div = document.getElementById( 'rule_div' )
+				for( i = 0; i < rule_div.children.length; i++ )
+				{
+					rule_span = rule_div.children[i];
+					rule_input = rule_span.children[0];
+					rule_text = rule_input.value;
+					rule_func = GenerateRuleFunction( rule_text );
+					if( !rule_func )
+					{
+						alert( 'Failed to parse rule ' + rule_span.id );
+						return;
+					}
+					
+					rule_array.push( rule_func );
+				}
+			
+				substitution_depth = parseInt( document.getElementById( 'substitution_depth' ).value );
+				initial_pattern = document.getElementById( 'initial_pattern' ).value;
+				final_pattern = GeneratePattern( initial_pattern, substitution_depth, rule_array );
+				
+				path = ExecutePattern( final_pattern );
+				
+				//...now execute the pattern using a turtle to generate SVG attribute...
+				//...may need to translate entire pattern to center...
+			}
+			
+			var OnDrawButtonClicked = function( event )
+			{
+				GenerateTurtleGraphics();
+			}
+			
+			var OnConfigureExampleButtonClicked = function()
+			{
+				DeleteAllRules();
+				
+				example_select = document.getElementById( 'example_select' );
+				example = example_select.value;
+				
+				initial_pattern = '';
+				
+				if( example === 'Dragon Curve' )
+				{
+					initial_pattern = 'F';
+					
+					AddRule( 'F->F+F-F-F+F' );
+				}
+				else if( example === 'Sierpinski Triangle' )
+				{
+					initial_pattern = 'A';
+					
+					AddRule( 'A->+B-A-B+' );
+					AddRule( 'B->-A+B+A-' );
+				}
+				
+				document.getElementById( 'initial_pattern' ).value = initial_pattern;
+			}
+		</script>
+	</head>
+	<body>
+		<h1>Turtle Graphics Demo</h1>
+		<p>This page combines turtles graphics with a Lindenmayer system.</p>
+		</p>
+		<form>
+			Examples: <select id="example_select">
+			<option>Dragon Curve</option>
+			<option>Sierpinski Triangle</option>
+			</select><input type="button" value="Configure Example" onclick="OnConfigureExampleButtonClicked()"><br>
+			Initial Pattern: <input type="text" id="initial_pattern" value="FLFR"><br>
+			Substitution Depth: <input type="text" id="substitution_depth" value="5"><br>
+			<div id="rule_div">
+			</div>
+			<input type="button" value="Add Rule" onclick="OnAddRuleButtonClicked( event )">
+		</form>
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="200">
+			<path d="M100,90, h-50 a50,50 0 1,0 50,-50 z" fill="none" stroke="purple" stroke-width="1"/>
+		</svg><br>
+		<input type="button" value="Draw!" onclick="OnDrawButtonClicked()"><br>
+	</body>
+</html>
