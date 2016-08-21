@@ -1,7 +1,47 @@
 <html>
 	<head>
-		<title>Turtle Graphics Demo</title>
+		<title>L-System & Turtle Graphics Demo</title>
 		<meta charset="UTF-8">
+		<style>
+			h1
+			{
+				font-family: "Courier New";
+				font-size: 16pt;
+				text-align: center;
+			}
+		
+			p, input, select
+			{
+				font-family: "Courier New";
+				font-size: 10pt;
+			}
+			
+			input, select
+			{
+				text-align: center;
+				width: 200px;
+			}
+			
+			form
+			{
+				margin: 0px;
+			}
+			
+			#demo
+			{
+				margin: auto;
+				width: 50%;
+			}
+			
+			.label
+			{
+				width: 200px;
+				display: inline-block;
+				text-align: right;
+				font-family: "Courier New";
+				font-size: 10pt;
+			}
+		</style>
 		<script src="https://code.jquery.com/jquery.js"></script>
 		<script type="text/javascript">
 			var AddRule = function( rule_text )
@@ -16,7 +56,7 @@
 				}
 				
 				rule_div = document.getElementById( 'rule_div' );
-				$( '#rule_div' ).append( '<span class="rule" id="rule_' + id + '">Rule ' + id + ': <input id="rule_' + id + '_input" type="text" value="' + rule_text + '"><input type="button" value="Delete" onclick="OnDeleteRuleButtonClicked( event, ' + id + ' )"><br></span>' );
+				$( '#rule_div' ).append( '<span class="rule" id="rule_' + id + '"><span class="label">Rule ' + id + ': </span><input id="rule_' + id + '_input" type="text" value="' + rule_text + '"><input type="button" value="Delete" onclick="OnDeleteRuleButtonClicked( event, ' + id + ' )"><br></span>' );
 				$( '#rule_' + id ).hide().fadeIn( 500 );
 			}
 			
@@ -42,14 +82,16 @@
 				state.color = 'black';
 				state.location = { 'x' : 0, 'y' : 0 };
 				state.orientation = 0;
-				state.width = 1;
 				state.drawing = true;
 				
 				this.state_stack = []
 				this.PushState( state );
 			}
 			
+			// TODO: Expose these with input boxes.
 			Turtle.prototype.angle_delta = 45;
+			Turtle.prototype.push_angle_delta = 0;
+			Turtle.prototype.pop_angle_delta = 0;
 			
 			Turtle.prototype.PushState = function( state )
 			{
@@ -85,11 +127,67 @@
 				this.SetState( state );
 			}
 			
-			function ExecutePattern( pattern )
+			var CalcBoundingBox = function( state_array )
+			{
+				bounding_box =
+				{
+					'x_min' : state_array[0].location.x,
+					'x_max' : state_array[0].location.x,
+					'y_min' : state_array[0].location.y,
+					'y_max' : state_array[0].location.y
+				};
+			
+				for( var i = 1; i < state_array.length; i++ )
+				{
+					if( state_array[i].location.x < bounding_box.x_min )
+						bounding_box.x_min = state_array[i].location.x;
+					if( state_array[i].location.x > bounding_box.x_max )
+						bounding_box.x_max = state_array[i].location.x;
+					if( state_array[i].location.y < bounding_box.y_min )
+						bounding_box.y_min = state_array[i].location.y;
+					if( state_array[i].location.y > bounding_box.y_max )
+						bounding_box.y_max = state_array[i].location.y;
+				}
+				
+				return bounding_box;
+			}
+			
+			var ExpandToMatchAspectRatio = function( expanding_box, stationary_box )
+			{
+				var expanding_box_width = expanding_box.x_max - expanding_box.x_min;
+				var expanding_box_height = expanding_box.y_max - expanding_box.y_min;
+				var expanding_box_aspect = expanding_box_width / expanding_box_height;
+				
+				var stationary_box_width = stationary_box.x_max - stationary_box.x_min;
+				var stationary_box_height = stationary_box.y_max - stationary_box.y_min;
+				var stationary_box_aspect = stationary_box_width / stationary_box_height;
+				
+				if( stationary_box_aspect > expanding_box_aspect )
+				{
+					var dx = ( expanding_box_height * stationary_box_aspect  - expanding_box_width ) / 2.0;
+					expanding_box.x_min -= dx;
+					expanding_box.x_max += dx;
+				}
+				else if( stationary_box_aspect < expanding_box_aspect )
+				{
+					var dy = ( expanding_box_width / stationary_box_aspect - expanding_box_height ) / 2.0;
+					expanding_box.y_min -= dy;
+					expanding_box.y_max += dy;
+				}
+			}
+			
+			var LinearlyMapFromBoxToBox = function( location, source_box, target_box )
+			{
+				var x_lerp = ( location.x - source_box.x_min ) / ( source_box.x_max - source_box.x_min );
+				var y_lerp = ( location.y - source_box.y_min ) / ( source_box.y_max - source_box.y_min );
+				location.x = target_box.x_min + x_lerp * ( target_box.x_max - target_box.x_min );
+				location.y = target_box.y_min + y_lerp * ( target_box.y_max - target_box.y_min );
+			}
+			
+			function ExecutePattern( pattern, draw_and_move_symbols, move_only_symbols )
 			{
 				var turtle = new Turtle();
 				var state_array = [];
-				var path = '';
 				
 				state_array.push( turtle.GetState( true ) );
 				
@@ -98,13 +196,29 @@
 					var symbol = pattern[i];
 					
 					if( symbol === '[' )
-						turtle.PushState( turtle.GetState() );
+					{
+						turtle.PushState( turtle.GetState( true ) );
+						turtle.GetState().orientation += Turtle.prototype.push_angle_delta;
+					}
 					else if( symbol === ']' )
-						turtle.PopState();
+					{
+						turtle.PopState();		// TODO: We need to do something here to deliniate a path.
+						turtle.GetState().orientation += Turtle.prototype.pop_angle_delta;
+					}
 					else if( symbol.match( /[A-Z]{1}/ ) )
 					{
-						// TODO: Need way to configure variables to be 'move forward with draw', 'move forward with no draw', or 'do nothing', etc.
-						turtle.Move(1);
+						if( draw_and_move_symbols.indexOf( symbol ) >= 0 )
+						{
+							if( state_array.length > 0 )
+								state_array[ state_array.length - 1 ].draw = true;
+							turtle.Move(1);
+						}
+						else if( move_only_symbols.indexOf( symbol ) >= 0 )
+						{
+							if( state_array.length > 0 )
+								state_array[ state_array.length - 1 ].draw = false;
+							turtle.Move(1);
+						}
 					}
 					else if( symbol === '+' )
 						turtle.GetState().orientation += Turtle.prototype.angle_delta;
@@ -114,14 +228,16 @@
 						turtle.GetState().drawing = true;
 					else if( symbol === '!' )
 						turtle.GetSTate().drawing = false;
+					else
+					{
+						alert( 'Encountered unknown symbol: ' + symbol );
+						return null;
+					}
 						
 					state_array.push( turtle.GetState( true ) );
 				}
 				
-				//...calculate a bounding rectangle...
-				//...move all turtle locations to fit into the SVG drawing area...
-				
-				return path;
+				return state_array;
 			}
 			
 			function GeneratePattern( pattern, substitution_depth, rule_array )
@@ -132,14 +248,24 @@
 					
 					for( var j = 0; j < pattern.length; j++ )
 					{
+						var appendage = pattern[j];
+						
 						for( var k = 0; k < rule_array.length; k++ )
 						{
 							var replacement = rule_array[k]( pattern[j] );
 							if( replacement )
 							{
-								new_pattern = new_pattern + replacement;
+								appendage = replacement;
 								break;
 							}
+						}
+						
+						new_pattern = new_pattern + appendage;
+						
+						if( new_pattern.length > 33000 )
+						{
+							alert( 'Pattern became too large!' );
+							return null;
 						}
 					}
 					
@@ -163,13 +289,16 @@
 			
 			function GenerateTurtleGraphics()
 			{
+				svg_canvas = document.getElementById( 'svg_canvas' );
+				svg_canvas.innerHTML = '';
+			
 				rule_array = [];
 			
 				rule_div = document.getElementById( 'rule_div' )
 				for( i = 0; i < rule_div.children.length; i++ )
 				{
 					rule_span = rule_div.children[i];
-					rule_input = rule_span.children[0];
+					rule_input = rule_span.children[1];
 					rule_text = rule_input.value;
 					rule_func = GenerateRuleFunction( rule_text );
 					if( !rule_func )
@@ -184,11 +313,90 @@
 				substitution_depth = parseInt( document.getElementById( 'substitution_depth' ).value );
 				initial_pattern = document.getElementById( 'initial_pattern' ).value;
 				final_pattern = GeneratePattern( initial_pattern, substitution_depth, rule_array );
+				if( !final_pattern )
+					return;
 				
-				path = ExecutePattern( final_pattern );
+				document.getElementById( 'pattern_result' ).innerHTML = final_pattern;
 				
-				//...now execute the pattern using a turtle to generate SVG attribute...
-				//...may need to translate entire pattern to center...
+				draw_and_move_symbols = document.getElementById( 'draw_and_move_symbols' ).value;
+				move_only_symbols = document.getElementById( 'move_only_symbols' ).value;
+				state_array = ExecutePattern( final_pattern, draw_and_move_symbols, move_only_symbols );
+				if( !state_array || state_array.length === 0 )
+					return;
+				
+				bounding_box = CalcBoundingBox( state_array );
+				
+				svg_canvas_box =
+				{
+					'x_min' : 0,
+					'x_max' : svg_canvas.width.baseVal.value,
+					'y_min' : 0,
+					'y_max' : svg_canvas.height.baseVal.value,
+				};
+				
+				ExpandToMatchAspectRatio( bounding_box, svg_canvas_box );
+				
+				for( var i = 0; i < state_array.length; i++ )
+				{
+					var state = state_array[i];
+					
+					LinearlyMapFromBoxToBox( state.location, bounding_box, svg_canvas_box );
+
+					state.location.x = Math.round( state.location.x );
+					state.location.y = Math.round( svg_canvas.height.baseVal.value - state.location.y );
+				}
+
+				var path_array = [];
+				var cur_path = null;
+				
+				// TODO: This needs a lot of work.  The draw flag needs to be accounted for here too.
+				//       We might simplify by controlling poly-line deliniation by a single dedicated flag set/reset during execution.
+				for( var i = 0; i < state_array.length; i++ )
+				{
+					var state = state_array[i];
+					
+					if( !cur_path || cur_path.color != state.color )
+					{
+						cur_path = {};
+						cur_path.color = state.color;
+						cur_path.state_array = [];
+						path_array.push( cur_path );
+					}
+					
+					cur_path.state_array.push( state );
+				}
+				
+				for( var i = 0; i < path_array.length; i++ )
+				{
+					var cur_path = path_array[i];
+					
+					path = '';
+					
+					for( var j = 0; j < cur_path.state_array.length; j++ )
+					{
+						var state = cur_path.state_array[j];
+						if( j === 0 )
+							path += 'M ' + state.location.x + ' ' + state.location.y;
+						else if( j > 0 )
+						{
+							if( cur_path.state_array[ j - 1 ].drawing )
+								path += ' L ' + state.location.x + ' ' + state.location.y;
+							else
+								path += ' M ' + state.location.x + ' ' + state.location.y;
+						}
+					}
+					
+					if( path.length > 0 )
+					{
+						// Why do I need the "NS" version of this function?
+						path_ele = document.createElementNS( 'http://www.w3.org/2000/svg', 'path' );
+						path_ele.setAttributeNS( null, 'd', path );
+						path_ele.setAttributeNS( null, 'stroke', cur_path.color );
+						path_ele.setAttributeNS( null, 'stroke-width', 1 );
+						path_ele.setAttributeNS( null, 'fill', 'none' );
+						svg_canvas.appendChild( path_ele );
+					}
+				}
 			}
 			
 			var OnDrawButtonClicked = function( event )
@@ -207,16 +415,74 @@
 				
 				if( example === 'Dragon Curve' )
 				{
-					initial_pattern = 'F';
-					
-					AddRule( 'F->F+F-F-F+F' );
+					initial_pattern = 'FX';
+					Turtle.prototype.angle_delta = 90;
+					Turtle.prototype.push_angle_delta = 0;
+					Turtle.prototype.pop_angle_delta = 0;
+					document.getElementById( 'draw_and_move_symbols' ).value = 'F';
+					document.getElementById( 'move_only_symbols' ).value = '';
+					document.getElementById( 'substitution_depth' ).value = '13';
+					AddRule( 'X->X+YF+' );
+					AddRule( 'Y->-FX-Y' );
 				}
 				else if( example === 'Sierpinski Triangle' )
 				{
 					initial_pattern = 'A';
-					
+					Turtle.prototype.angle_delta = 60;
+					Turtle.prototype.push_angle_delta = 0;
+					Turtle.prototype.pop_angle_delta = 0;
+					document.getElementById( 'draw_and_move_symbols' ).value = 'AB';
+					document.getElementById( 'move_only_symbols' ).value = '';
+					document.getElementById( 'substitution_depth' ).value = '8';
 					AddRule( 'A->+B-A-B+' );
 					AddRule( 'B->-A+B+A-' );
+				}
+				else if( example === 'Fractal Plant' )
+				{
+					initial_pattern = 'X';
+					Turtle.prototype.angle_delta = 25;
+					Turtle.prototype.push_angle_delta = 0;
+					Turtle.prototype.pop_angle_delta = 0;
+					document.getElementById( 'draw_and_move_symbols' ).value = 'F';
+					document.getElementById( 'move_only_symbols' ).value = '';
+					document.getElementById( 'substitution_depth' ).value = '4';
+					AddRule( 'X->F-[[X]+X]+F[+FX]-X' );
+					AddRule( 'F->FF' );
+				}
+				else if( example === 'Koch Curve' )
+				{
+					initial_pattern = 'F';
+					Turtle.prototype.angle_delta = 90;
+					Turtle.prototype.push_angle_delta = 0;
+					Turtle.prototype.pop_angle_delta = 0;
+					document.getElementById( 'draw_and_move_symbols' ).value = 'F';
+					document.getElementById( 'move_only_symbols' ).value = '';
+					document.getElementById( 'substitution_depth' ).value = '5';
+					AddRule( 'F->F+F-F-F+F' );
+				}
+				else if( example === 'Cantor Dust' )
+				{
+					initial_pattern = 'A';
+					Turtle.prototype.angle_delta = 0;
+					Turtle.prototype.push_angle_delta = 0;
+					Turtle.prototype.pop_angle_delta = 0;
+					document.getElementById( 'draw_and_move_symbols' ).value = 'A';
+					document.getElementById( 'move_only_symbols' ).value = 'B';
+					document.getElementById( 'substitution_depth' ).value = '5';
+					AddRule( 'A->ABA' );
+					AddRule( 'B->BBB' );
+				}
+				else if( example === 'Pythagoras Tree' )
+				{
+					initial_pattern = '0';
+					Turtle.prototype.angle_delta = 0;
+					Turtle.prototype.push_angle_delta = 45;
+					Turtle.prototype.pop_angle_delta = -45;
+					document.getElementById( 'draw_and_move_symbols' ).value = '01';
+					document.getElementById( 'move_only_symbols' ).value = '';
+					document.getElementById( 'substitution_depth' ).value = '5';
+					AddRule( '1->11' );
+					AddRule( '0->1[0]0' );
 				}
 				
 				document.getElementById( 'initial_pattern' ).value = initial_pattern;
@@ -224,23 +490,30 @@
 		</script>
 	</head>
 	<body>
-		<h1>Turtle Graphics Demo</h1>
-		<p>This page combines turtles graphics with a Lindenmayer system.</p>
-		</p>
-		<form>
-			Examples: <select id="example_select">
-			<option>Dragon Curve</option>
-			<option>Sierpinski Triangle</option>
-			</select><input type="button" value="Configure Example" onclick="OnConfigureExampleButtonClicked()"><br>
-			Initial Pattern: <input type="text" id="initial_pattern" value="FLFR"><br>
-			Substitution Depth: <input type="text" id="substitution_depth" value="5"><br>
-			<div id="rule_div">
-			</div>
-			<input type="button" value="Add Rule" onclick="OnAddRuleButtonClicked( event )">
-		</form>
-		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="200">
-			<path d="M100,90, h-50 a50,50 0 1,0 50,-50 z" fill="none" stroke="purple" stroke-width="1"/>
-		</svg><br>
-		<input type="button" value="Draw!" onclick="OnDrawButtonClicked()"><br>
+		<div id="demo">
+			<h1>L-System & Turtle Graphics Demo</h1>
+			<p>This page combines turtles graphics with a Lindenmayer system.</p>
+			</p>
+			<form>
+				<span class="label">Examples: </span><select id="example_select">
+				<option>Dragon Curve</option>
+				<option>Sierpinski Triangle</option>
+				<option>Fractal Plant</option>
+				<option>Koch Curve</option>
+				<option>Cantor Dust</option>
+				</select><input type="button" value="Configure Example" onclick="OnConfigureExampleButtonClicked()"><br>
+				<span class="label">Initial Pattern: </span><input type="text" id="initial_pattern" value=""><br>
+				<span class="label">Substitution Depth: </span><input type="text" id="substitution_depth" value="0"><br>
+				<span class="label">Draw & Move Symbols: </span><input type="text" id="draw_and_move_symbols" value=""><br>
+				<span class="label">Move Only Symbols: </span><input type="text" id="move_only_symbols" value=""><br>
+				<div id="rule_div">
+				</div>
+				<span class="label"></span><input type="button" value="Add Rule" onclick="OnAddRuleButtonClicked( event )"><br>
+				<input type="button" value="Draw!" onclick="OnDrawButtonClicked()"><br>
+			</form>
+			<svg id="svg_canvas" xmlns="http://www.w3.org/2000/svg" version="1.1" width="600" height="600">
+			</svg><br>
+			<p id='pattern_result'></p>
+		</div>
 	</body>
 </html>
